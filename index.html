@@ -455,6 +455,54 @@ input[type=range]{
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+/* ═══ SCHEDA AUTORE (manuale) ═══ */
+.author-card{
+  background:var(--surface2);
+  border:2px solid var(--primary-l);
+  border-radius:var(--radius);
+  padding:16px 18px 14px;
+  margin-bottom:20px;
+}
+.author-card-top{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:12px;
+}
+.author-app-icon{
+  width:56px;height:56px;border-radius:14px;
+  background:var(--primary);
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(21,101,192,0.3);
+}
+.author-app-name{
+  font-size:var(--fs-big);font-weight:900;color:var(--text);line-height:1.1;
+}
+.author-ver-badge{
+  display:inline-block;
+  background:var(--primary);color:#fff;
+  font-size:13px;font-weight:800;
+  padding:2px 9px;border-radius:20px;
+  vertical-align:middle;margin-left:6px;
+}
+.author-app-sub{
+  font-size:var(--fs-small);color:var(--text2);font-weight:600;margin-top:3px;
+}
+.author-details{
+  border-top:1px solid var(--border);
+  padding-top:10px;margin-bottom:10px;
+  display:flex;flex-direction:column;gap:4px;
+}
+.author-line{font-size:var(--fs-label);color:var(--text);font-weight:600;}
+.author-rights{
+  background:#fff3e0;
+  border:1.5px solid #ffb74d;
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:var(--fs-small);
+  color:#7c3e00;
+  line-height:1.5;
+}
+
 .hidden{display:none!important;}
 .section-title{
   font-size:var(--fs-big);font-weight:900;color:var(--text);
@@ -670,10 +718,32 @@ input[type=range]{
 <div class="modal-backdrop center hidden" id="modalHelp">
   <div class="modal">
     <div class="modal-header">
-      <h2>❓ Come si usa</h2>
+      <h2>❓ Come usare PrendiPillola</h2>
       <button class="modal-close" id="closeHelp" aria-label="Chiudi">✕</button>
     </div>
 
+    <!-- ── SCHEDA AUTORE (stile ScriviLibro) ── -->
+    <div class="author-card">
+      <div class="author-card-top">
+        <div class="author-app-icon">💊</div>
+        <div class="author-app-info">
+          <div class="author-app-name">PrendiPillola <span class="author-ver-badge">v1</span></div>
+          <div class="author-app-sub">Produzione Software — maggio 2026</div>
+        </div>
+      </div>
+      <div class="author-details">
+        <div class="author-line"><strong>© 2026 Lazzaro Serva - Centola</strong></div>
+        <div class="author-line">Via Tasso, 28 – 84051 CENTOLA (SA) – Italia</div>
+        <div class="author-line">
+          🌐 <a href="http://www.graficaesiti.it/" target="_blank" rel="noopener" style="color:var(--primary);font-weight:700;">www.graficaesiti.it</a>
+        </div>
+      </div>
+      <div class="author-rights">
+        🔒 <strong>Tutti i diritti riservati.</strong> Vietata la riproduzione, modifica o distribuzione senza autorizzazione scritta del titolare.
+      </div>
+    </div>
+
+    <!-- ── MANUALE D'USO ── -->
     <div class="help-section">
       <h3>🚀 Per iniziare</h3>
       <p>Tocca il tab <strong>Farmaci</strong> in basso, poi il pulsante <strong>＋</strong> per aggiungere il tuo primo farmaco. Inserisci nome, tipo e orari di assunzione.</p>
@@ -683,47 +753,66 @@ input[type=range]{
       <h3>📅 Scheda "Oggi"</h3>
       <ul>
         <li>Mostra tutti i farmaci da prendere oggi, in ordine di orario.</li>
-        <li>Tocca <strong>✅ Preso</strong> quando hai assunto il farmaco.</li>
-        <li>Tocca <strong>❌ Saltato</strong> se non puoi prenderlo.</li>
-        <li>Tocca <strong>⚠️ Errore</strong> in caso di assunzione errata.</li>
-        <li>Con 🎙️ (microfono) puoi dire <em>"Preso"</em>, <em>"Saltato"</em>, <em>"Annulla"</em>.</li>
+        <li>Tocca <strong>✅ Ho preso</strong> quando hai assunto il farmaco.</li>
+        <li>Tocca <strong>❌ Non preso</strong> se non puoi prenderlo.</li>
+        <li>Tocca <strong>⚠️ Errore</strong> per segnalare un'assunzione errata.</li>
+        <li>Tocca <strong>🚫 Annulla</strong> per cancellare una registrazione.</li>
+        <li>Con 🎙️ (microfono) puoi dire <em>"Preso"</em>, <em>"Saltato"</em> o <em>"Annulla"</em> senza toccare lo schermo.</li>
       </ul>
     </div>
 
     <div class="help-section">
-      <h3>🔔 Avvisi</h3>
+      <h3>🗂️ Aggiungere un farmaco</h3>
       <ul>
-        <li>L'app avvisa all'orario impostato con suono e/o schermo lampeggiante.</li>
-        <li>Puoi scegliere il tipo e l'intensità in <strong>Impostazioni</strong>.</li>
-        <li>Abilita le <em>notifiche di sistema</em> per avvisi anche a schermo spento.</li>
+        <li>Vai alla scheda <strong>Farmaci</strong> e tocca il pulsante <strong>＋</strong> in basso a destra.</li>
+        <li>Scrivi il nome del farmaco o della cura.</li>
+        <li>Scegli il <strong>tipo</strong>: compressa, gocce, sciroppo, spray, cerotto, ecc.</li>
+        <li>Aggiungi uno o più <strong>orari</strong> di assunzione giornalieri.</li>
+        <li>Scegli il tipo di <strong>avviso</strong> preferito per quel farmaco.</li>
+        <li>Tocca <strong>Salva farmaco</strong>.</li>
       </ul>
     </div>
 
     <div class="help-section">
-      <h3>💊 Tipi di farmaco supportati</h3>
-      <p>Compressa, gocce, sciroppo, spray, inalatore, cerotto, iniezione, supposta, crema, collirio, bustina e altro. Puoi registrare qualsiasi tipo di assunzione.</p>
+      <h3>🔔 Avvisi e allarmi</h3>
+      <ul>
+        <li>All'orario impostato l'app attiva suono, schermo lampeggiante e/o vibrazione.</li>
+        <li>Puoi scegliere il <strong>tipo di suono</strong>: campana, beep, allarme o voce.</li>
+        <li>Regola l'<strong>intensità</strong> (bassa, media, alta) e il <strong>volume</strong> in Impostazioni.</li>
+        <li>Puoi far scattare l'avviso in <strong>anticipo</strong>: 0, 5, 10 o 15 minuti prima.</li>
+        <li>Abilita le <strong>notifiche di sistema</strong> (in Impostazioni) per ricevere avvisi anche a schermo spento.</li>
+      </ul>
+    </div>
+
+    <div class="help-section">
+      <h3>💊 Tipi di farmaco e assunzione</h3>
+      <p>Puoi registrare qualsiasi tipo di cura: <strong>compressa / pillola, gocce, sciroppo, spray, inalatore / aerosol, cerotto, iniezione, supposta, crema / unguento, collirio, bustina</strong> e <strong>altro</strong> per qualsiasi altra assunzione delegata alla persona.</p>
     </div>
 
     <div class="help-section">
       <h3>📋 Storico</h3>
-      <p>La scheda Storico mostra gli ultimi 14 giorni di assunzioni con il relativo stato.</p>
+      <p>La scheda <strong>Storico</strong> mostra gli ultimi 14 giorni di assunzioni con data, ora e stato (✅ Preso, ❌ Saltato, 🚫 Annullato, ⚠️ Errore, ⏳ In attesa).</p>
     </div>
 
     <div class="help-section">
       <h3>🎙️ Comandi vocali</h3>
       <ul>
-        <li><strong>"Preso"</strong> — segna il farmaco più vicino come assunto</li>
-        <li><strong>"Non preso" / "Saltato"</strong> — segna come non assunto</li>
-        <li><strong>"Annulla"</strong> — annulla l'ultima azione</li>
+        <li><strong>"Preso"</strong> / <em>"Ho preso"</em> — segna il farmaco più vicino come assunto</li>
+        <li><strong>"Saltato"</strong> / <em>"Non preso"</em> — segna come non assunto</li>
+        <li><strong>"Annulla"</strong> / <em>"Errore"</em> — annulla l'ultima azione</li>
+      </ul>
+      <p style="margin-top:8px;">I comandi vocali si attivano solo se abilitati in <strong>Impostazioni → Comandi vocali</strong>.</p>
+    </div>
+
+    <div class="help-section">
+      <h3>🔠 Accessibilità</h3>
+      <ul>
+        <li><strong>Testo grande / enorme</strong> — impostabile in Impostazioni → Aspetto.</li>
+        <li><strong>Alto contrasto</strong> — colori più netti per ipovedenti.</li>
+        <li>Pulsanti ampi, tocco semplice, nessun menu nascosto.</li>
       </ul>
     </div>
 
-    <div class="help-section" style="border-top:2px solid var(--border);padding-top:14px;margin-top:4px;">
-      <p style="font-size:var(--fs-small);color:var(--text2);text-align:center;">
-        PrendiPillola v1 — © 2026 Lazzaro Serva - Centola<br>
-        <a href="http://www.graficaesiti.it/" style="color:var(--primary);">www.graficaesiti.it</a>
-      </p>
-    </div>
   </div>
 </div>
 

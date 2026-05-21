@@ -1,0 +1,29 @@
+# CHANGELOG — PrendiPillola
+
+## v1 — maggio 2026 (prima versione)
+
+### Funzionalità aggiunte
+- Scheda "Oggi" con elenco farmaci giornalieri ordinati per orario
+- Gestione farmaci: aggiunta, modifica, eliminazione
+- 12 tipi di farmaco/assunzione: compressa, gocce, sciroppo, spray,
+  inalatore, cerotto, iniezione, supposta, crema, collirio, bustina, altro
+- Sistema di avvisi multipli: sonoro, visivo, vibrazione
+- 4 suoni di avviso: campana, beep, allarme, voce (sintesi vocale)
+- 3 livelli di intensità alert: bassa, media, alta
+- Avviso anticipato configurabile: 0, 5, 10 o 15 minuti prima
+- Overlay alert lampeggiante con pulsanti "Ho preso" / "Non preso"
+- Comandi vocali: "Preso", "Saltato", "Annulla"
+- Storico 14 giorni con stati: Preso, Saltato, Annullato, Errore, In attesa
+- 3 dimensioni testo: normale, grande, enorme (accessibilità ipovedenti)
+- Modalità alto contrasto
+- Notifiche di sistema (richiesta permesso)
+- Service Worker per uso offline
+- Installabile come PWA su Android, iOS, desktop
+- Copyright e protezioni integrate in tutti i file
+- Manuale d'uso integrato (icona ? in alto a destra)
+- Pulsante azione rapida FAB per aggiungere farmaci
+- Navigazione a schede: Oggi, Farmaci, Storico, Impostazioni
+
+---
+
+*Copyright (c) 2026 Lazzaro Serva - Centola — Tutti i diritti riservati*

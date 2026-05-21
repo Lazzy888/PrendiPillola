@@ -1,0 +1,40 @@
+════════════════════════════════════════════════════════════════
+  AUTORE / AUTHOR
+════════════════════════════════════════════════════════════════
+
+  Nome:       Lazzaro Serva
+  Indirizzo:  Via Tasso, 28 – 84051 CENTOLA (SA) – Italia
+  Sito web:   http://www.graficaesiti.it/
+
+════════════════════════════════════════════════════════════════
+  PROGETTO
+════════════════════════════════════════════════════════════════
+
+  Applicazione:  PrendiPillola (PWA)
+  Versione:      v1
+  Data:          maggio 2026
+  Descrizione:   PWA per il promemoria delle assunzioni di
+                 farmaci e cure quotidiane, progettata per
+                 persone anziane. Supporta qualsiasi tipo di
+                 farmaco o assunzione delegata alla persona.
+                 Avvisi visivi, sonori e vocali multilivello.
+
+════════════════════════════════════════════════════════════════
+  COPYRIGHT
+════════════════════════════════════════════════════════════════
+
+  Copyright (c) 2026 Lazzaro Serva - Centola
+  Tutti i diritti riservati. Vedi file LICENSE.
+
+════════════════════════════════════════════════════════════════
+  TECNOLOGIE
+════════════════════════════════════════════════════════════════
+
+  Linguaggi:    HTML5, CSS3, JavaScript (ES2020+)
+  PWA API:      Service Worker, Web App Manifest
+  Audio:        Web Audio API, Web Speech API
+  Storage:      localStorage (dati offline)
+  Notifiche:    Notifications API
+  Font:         Nunito (Google Fonts)
+
+════════════════════════════════════════════════════════════════

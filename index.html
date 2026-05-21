@@ -1,0 +1,1507 @@
+<!--
+  ============================================================
+  PrendiPillola v1 — Promemoria Farmaci
+  Copyright (c) 2026 Lazzaro Serva - Centola
+  Via Tasso, 28 – 84051 CENTOLA (SA) – Italia
+  http://www.graficaesiti.it/
+  Tutti i diritti riservati – All rights reserved.
+  Vietata riproduzione, modifica e distribuzione senza
+  autorizzazione scritta del titolare del copyright.
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <title>PrendiPillola</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#1565c0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="PrendiPillola"/>
+  <meta name="description" content="Promemoria farmaci semplice per persone anziane — PrendiPillola v1"/>
+  <link rel="apple-touch-icon" href="assets/icon-192.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+
+<style>
+/* ═══ VARIABILI TEMA ═══ */
+:root {
+  --primary: #1565c0;
+  --primary-l: #1e88e5;
+  --primary-d: #0d47a1;
+  --secondary: #00897b;
+  --success: #2e7d32;
+  --success-l: #43a047;
+  --warning: #e65100;
+  --danger: #c62828;
+  --pending: #546e7a;
+  --bg: #e3f2fd;
+  --surface: #ffffff;
+  --surface2: #f0f7ff;
+  --text: #0d2137;
+  --text2: #37474f;
+  --border: #90caf9;
+  --shadow: 0 3px 12px rgba(21,101,192,0.18);
+  --shadow-l: 0 6px 24px rgba(21,101,192,0.22);
+  --radius: 18px;
+  --radius-s: 12px;
+  --fs-body: 20px;
+  --fs-label: 18px;
+  --fs-small: 16px;
+  --fs-big: 24px;
+  --fs-title: 28px;
+}
+.hc {
+  --primary: #003d99;
+  --bg: #f5faff;
+  --text: #000000;
+  --text2: #111111;
+  --border: #003d99;
+}
+.fs-xl { --fs-body:24px; --fs-label:22px; --fs-small:19px; --fs-big:30px; --fs-title:34px; }
+.fs-xxl{ --fs-body:28px; --fs-label:26px; --fs-small:22px; --fs-big:36px; --fs-title:40px; }
+
+/* ═══ RESET / BASE ═══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{
+  font-family:'Nunito',sans-serif;
+  font-size:var(--fs-body);
+  background:var(--bg);
+  color:var(--text);
+  display:flex;flex-direction:column;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+button{font-family:inherit;cursor:pointer;border:none;outline:none;}
+input,select,textarea{font-family:inherit;font-size:var(--fs-body);outline:none;}
+
+/* ═══ HEADER ═══ */
+#header{
+  background:var(--primary);
+  color:#fff;
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.25);
+  z-index:100;
+  flex-shrink:0;
+}
+#header .logo{font-size:28px;}
+#header .title{flex:1;font-weight:900;font-size:var(--fs-big);letter-spacing:-.5px;}
+#header .title span{font-size:13px;opacity:.75;display:block;font-weight:600;}
+.hdr-btn{
+  background:rgba(255,255,255,0.18);
+  border:2px solid rgba(255,255,255,0.35);
+  color:#fff;border-radius:50%;
+  width:52px;height:52px;
+  font-size:22px;display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.hdr-btn:active{background:rgba(255,255,255,0.35);}
+
+/* ═══ MAIN CONTENT ═══ */
+#main{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 14px 10px;}
+.view{display:none;}
+.view.active{display:block;}
+
+/* ═══ BOTTOM NAV ═══ */
+#bottom-nav{
+  display:flex;background:var(--surface);
+  border-top:2px solid var(--border);
+  flex-shrink:0;z-index:100;
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:10px 4px 8px;
+  background:none;color:var(--text2);font-size:12px;font-weight:700;
+  border-top:3px solid transparent;
+  transition:all .15s;gap:3px;
+}
+.nav-btn .ni{font-size:26px;line-height:1;}
+.nav-btn.active{color:var(--primary);border-top-color:var(--primary);}
+.nav-btn:active{background:var(--surface2);}
+
+/* ═══ CARDS OGGI ═══ */
+.day-header{
+  background:var(--primary);
+  color:#fff;border-radius:var(--radius);
+  padding:14px 18px;margin-bottom:16px;
+  display:flex;align-items:center;gap:12px;
+}
+.day-header .dh-icon{font-size:36px;}
+.day-header .dh-text h2{font-size:var(--fs-big);font-weight:900;}
+.day-header .dh-text p{font-size:var(--fs-label);opacity:.85;font-weight:600;}
+
+.dose-card{
+  background:var(--surface);
+  border-radius:var(--radius);
+  border:2px solid var(--border);
+  margin-bottom:14px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  transition:box-shadow .2s;
+}
+.dose-card-header{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px 10px;
+}
+.dose-icon{font-size:36px;flex-shrink:0;}
+.dose-name{flex:1;}
+.dose-name strong{font-size:var(--fs-big);font-weight:900;display:block;line-height:1.1;}
+.dose-name span{font-size:var(--fs-label);color:var(--text2);font-weight:600;}
+.dose-time{
+  font-size:var(--fs-big);font-weight:900;
+  color:var(--primary);white-space:nowrap;
+}
+.dose-status-badge{
+  font-size:var(--fs-label);font-weight:800;
+  padding:5px 12px;border-radius:20px;
+  margin:0 16px 10px;display:inline-block;
+}
+.badge-pending{background:#e3f2fd;color:var(--primary);}
+.badge-now   {background:#fff3e0;color:#e65100;animation:pulse 1.5s infinite;}
+.badge-taken {background:#e8f5e9;color:var(--success);}
+.badge-missed{background:#ffebee;color:var(--danger);}
+.badge-cancelled{background:#f3e5f5;color:#7b1fa2;}
+.badge-error {background:#fff8e1;color:#f57f17;}
+
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+
+.dose-actions{
+  display:flex;gap:8px;padding:10px 16px 14px;flex-wrap:wrap;
+}
+.btn-preso{
+  flex:1;min-width:120px;
+  background:var(--success);color:#fff;
+  border-radius:var(--radius-s);
+  padding:14px 10px;
+  font-size:var(--fs-big);font-weight:900;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:filter .15s;
+}
+.btn-preso:active{filter:brightness(.85);}
+.btn-small{
+  background:var(--surface2);color:var(--text2);
+  border:2px solid var(--border);
+  border-radius:var(--radius-s);
+  padding:12px 14px;
+  font-size:var(--fs-label);font-weight:700;
+  transition:background .15s;
+}
+.btn-small:active{background:var(--border);}
+.btn-small.red{color:var(--danger);border-color:var(--danger);}
+.btn-small.orange{color:var(--warning);border-color:var(--warning);}
+
+/* ═══ FAB ═══ */
+.fab{
+  position:fixed;bottom:80px;right:18px;
+  width:68px;height:68px;border-radius:50%;
+  background:var(--primary);color:#fff;
+  font-size:32px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 18px rgba(21,101,192,0.45);
+  z-index:200;transition:transform .15s;
+}
+.fab:active{transform:scale(.92);}
+
+/* ═══ LISTA FARMACI ═══ */
+.med-card{
+  background:var(--surface);border-radius:var(--radius);
+  border:2px solid var(--border);margin-bottom:14px;
+  box-shadow:var(--shadow);padding:16px;
+  display:flex;align-items:center;gap:14px;
+  transition:box-shadow .2s;
+}
+.med-card-info{flex:1;}
+.med-card-info strong{font-size:var(--fs-big);font-weight:900;display:block;}
+.med-card-info p{font-size:var(--fs-label);color:var(--text2);font-weight:600;margin-top:2px;}
+.med-card-actions{display:flex;gap:8px;}
+.icon-btn{
+  width:50px;height:50px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  border:2px solid var(--border);background:var(--surface2);
+  transition:background .15s;
+}
+.icon-btn:active{background:var(--border);}
+.icon-btn.danger{border-color:var(--danger);color:var(--danger);}
+
+/* ═══ STORICO ═══ */
+.history-day{
+  background:var(--surface);border-radius:var(--radius);
+  border:2px solid var(--border);margin-bottom:14px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.history-day-header{
+  background:var(--primary);color:#fff;
+  padding:10px 16px;font-size:var(--fs-label);font-weight:800;
+}
+.history-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+}
+.history-item:last-child{border-bottom:none;}
+.hi-icon{font-size:28px;}
+.hi-info{flex:1;}
+.hi-info strong{display:block;font-size:var(--fs-label);font-weight:900;}
+.hi-info span{font-size:var(--fs-small);color:var(--text2);}
+.hi-status{font-size:22px;}
+
+/* ═══ IMPOSTAZIONI ═══ */
+.settings-section{
+  background:var(--surface);border-radius:var(--radius);
+  border:2px solid var(--border);margin-bottom:16px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.settings-section h3{
+  background:var(--primary-d);color:#fff;
+  padding:12px 18px;font-size:var(--fs-label);font-weight:800;
+}
+.setting-row{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+}
+.setting-row:last-child{border-bottom:none;}
+.setting-label{flex:1;font-size:var(--fs-label);font-weight:700;}
+.setting-label small{display:block;font-size:var(--fs-small);color:var(--text2);font-weight:600;}
+.seg-control{display:flex;gap:6px;flex-wrap:wrap;}
+.seg-btn{
+  background:var(--surface2);border:2px solid var(--border);
+  border-radius:10px;padding:8px 14px;
+  font-size:var(--fs-small);font-weight:700;color:var(--text2);
+  transition:all .15s;
+}
+.seg-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.seg-btn:active{opacity:.8;}
+input[type=range]{
+  width:120px;accent-color:var(--primary);cursor:pointer;
+  height:8px;border-radius:4px;
+}
+.toggle{
+  position:relative;width:58px;height:32px;
+  background:var(--border);border-radius:16px;cursor:pointer;
+  border:2px solid var(--border);transition:background .2s;
+}
+.toggle::after{
+  content:'';position:absolute;
+  width:24px;height:24px;border-radius:50%;
+  background:#fff;top:2px;left:2px;
+  transition:left .2s;box-shadow:0 2px 5px rgba(0,0,0,0.3);
+}
+.toggle.on{background:var(--success);}
+.toggle.on::after{left:28px;}
+
+/* ═══ MODALI ═══ */
+.modal-backdrop{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);
+  display:flex;align-items:flex-end;justify-content:center;
+}
+.modal-backdrop.center{align-items:center;}
+.modal{
+  background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;
+  width:100%;max-height:92vh;overflow-y:auto;
+  padding:20px 16px 32px;
+}
+.modal-backdrop.center .modal{
+  border-radius:var(--radius);max-width:420px;margin:16px;
+  max-height:88vh;
+}
+.modal-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:20px;
+}
+.modal-header h2{flex:1;font-size:var(--fs-title);font-weight:900;}
+.modal-close{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--surface2);border:2px solid var(--border);
+  font-size:22px;display:flex;align-items:center;justify-content:center;
+}
+.field{margin-bottom:16px;}
+.field label{
+  display:block;font-size:var(--fs-label);font-weight:800;
+  margin-bottom:7px;color:var(--text);
+}
+.field input,.field select,.field textarea{
+  width:100%;border:2px solid var(--border);
+  border-radius:var(--radius-s);padding:14px 16px;
+  font-size:var(--fs-body);color:var(--text);
+  background:var(--surface2);
+  transition:border-color .15s;
+}
+.field input:focus,.field select:focus{border-color:var(--primary);}
+.type-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+}
+.type-btn{
+  background:var(--surface2);border:2px solid var(--border);
+  border-radius:var(--radius-s);padding:12px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:var(--fs-small);font-weight:700;color:var(--text2);
+  transition:all .15s;
+}
+.type-btn .ti{font-size:28px;}
+.type-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.type-btn:active{opacity:.8;}
+.times-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+.time-row{display:flex;align-items:center;gap:10px;}
+.time-row input[type=time]{
+  flex:1;border:2px solid var(--border);border-radius:var(--radius-s);
+  padding:12px 14px;font-size:var(--fs-big);font-weight:800;color:var(--primary);
+  background:var(--surface2);
+}
+.time-row input[type=time]:focus{border-color:var(--primary);}
+.btn-del-time{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--surface2);border:2px solid var(--danger);
+  color:var(--danger);font-size:20px;flex-shrink:0;
+}
+.btn-add-time{
+  background:var(--surface2);border:2px dashed var(--primary);
+  color:var(--primary);border-radius:var(--radius-s);
+  padding:12px;width:100%;font-size:var(--fs-label);font-weight:800;
+}
+.btn-primary{
+  width:100%;background:var(--primary);color:#fff;
+  border-radius:var(--radius-s);padding:16px;
+  font-size:var(--fs-big);font-weight:900;margin-top:10px;
+  transition:filter .15s;
+}
+.btn-primary:active{filter:brightness(.88);}
+.btn-danger{
+  width:100%;background:var(--danger);color:#fff;
+  border-radius:var(--radius-s);padding:14px;
+  font-size:var(--fs-body);font-weight:800;margin-top:8px;
+}
+
+/* ═══ MODALE ALERT ═══ */
+#alertOverlay{
+  position:fixed;inset:0;z-index:900;
+  background:rgba(230,81,0,0.92);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:20px;padding:30px;
+  animation:flashBg 1s infinite alternate;
+}
+@keyframes flashBg{0%{background:rgba(230,81,0,0.9);}100%{background:rgba(198,40,40,0.92);}}
+#alertOverlay .alert-icon{font-size:80px;animation:bounce 0.8s infinite alternate;}
+@keyframes bounce{0%{transform:scale(1);}100%{transform:scale(1.15);}}
+#alertOverlay .alert-msg{
+  color:#fff;font-size:var(--fs-title);font-weight:900;
+  text-align:center;line-height:1.3;text-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
+#alertOverlay .alert-sub{
+  color:rgba(255,255,255,0.85);font-size:var(--fs-big);font-weight:700;text-align:center;
+}
+.btn-alert-ok{
+  background:#fff;color:var(--warning);
+  border-radius:var(--radius);padding:20px 40px;
+  font-size:var(--fs-title);font-weight:900;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
+  margin-top:10px;min-width:240px;text-align:center;
+  animation:pulse 1s infinite;
+}
+.btn-alert-ok:active{transform:scale(.96);}
+
+/* ═══ HELP MODAL ═══ */
+.help-section{margin-bottom:20px;}
+.help-section h3{
+  font-size:var(--fs-big);font-weight:900;color:var(--primary);
+  border-bottom:2px solid var(--border);padding-bottom:6px;margin-bottom:10px;
+}
+.help-section p,.help-section li{font-size:var(--fs-label);line-height:1.6;color:var(--text2);}
+.help-section ul{padding-left:20px;}
+.help-section li{margin-bottom:6px;}
+
+/* ═══ STATO VUOTO ═══ */
+.empty-state{
+  text-align:center;padding:40px 20px;
+  color:var(--text2);
+}
+.empty-state .es-icon{font-size:72px;margin-bottom:16px;}
+.empty-state h2{font-size:var(--fs-big);font-weight:900;margin-bottom:10px;color:var(--text);}
+.empty-state p{font-size:var(--fs-label);margin-bottom:20px;}
+.btn-start{
+  background:var(--primary);color:#fff;
+  border-radius:var(--radius-s);padding:16px 28px;
+  font-size:var(--fs-big);font-weight:900;display:inline-block;
+}
+
+/* ═══ VOICE BUTTON ═══ */
+.voice-row{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface2);border:2px solid var(--border);
+  border-radius:var(--radius-s);padding:12px 14px;margin-bottom:14px;
+}
+.voice-row span{flex:1;font-size:var(--fs-label);font-weight:700;}
+.btn-voice{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--primary);color:#fff;font-size:26px;
+  display:flex;align-items:center;justify-content:center;
+  border:none;transition:transform .15s;flex-shrink:0;
+}
+.btn-voice.listening{background:var(--danger);animation:pulse 0.7s infinite;}
+.btn-voice:active{transform:scale(.92);}
+
+/* ═══ TOAST ═══ */
+#toast{
+  position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--text);color:#fff;
+  padding:12px 22px;border-radius:30px;
+  font-size:var(--fs-label);font-weight:700;
+  opacity:0;transition:opacity .3s,transform .3s;
+  z-index:800;text-align:center;max-width:90%;
+  pointer-events:none;white-space:nowrap;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.hidden{display:none!important;}
+.section-title{
+  font-size:var(--fs-big);font-weight:900;color:var(--text);
+  margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="header">
+  <span class="logo">💊</span>
+  <div class="title">
+    PrendiPillola
+    <span id="headerSub">Promemoria farmaci</span>
+  </div>
+  <button class="hdr-btn" id="helpBtn" aria-label="Manuale d'uso" title="Aiuto">❓</button>
+</header>
+
+<!-- ══ MAIN ══ -->
+<main id="main">
+
+  <!-- VIEW: OGGI -->
+  <section id="view-today" class="view active">
+    <div class="day-header">
+      <div class="dh-icon">🌅</div>
+      <div class="dh-text">
+        <h2 id="todayLabel">Oggi</h2>
+        <p id="todayDate">—</p>
+      </div>
+    </div>
+    <div id="todayVoiceRow" class="voice-row hidden">
+      <span id="voiceStatus">Tocca il microfono e di' "Preso"</span>
+      <button class="btn-voice" id="voiceBtn" title="Comando vocale" aria-label="Comando vocale">🎙️</button>
+    </div>
+    <div id="doseList"></div>
+  </section>
+
+  <!-- VIEW: FARMACI -->
+  <section id="view-medicines" class="view">
+    <p class="section-title">🗂️ I miei farmaci</p>
+    <div id="medicineList"></div>
+  </section>
+
+  <!-- VIEW: STORICO -->
+  <section id="view-history" class="view">
+    <p class="section-title">📋 Storico ultime settimane</p>
+    <div id="historyList"></div>
+  </section>
+
+  <!-- VIEW: IMPOSTAZIONI -->
+  <section id="view-settings" class="view">
+    <p class="section-title">⚙️ Impostazioni</p>
+
+    <div class="settings-section">
+      <h3>📣 Alert e notifiche</h3>
+      <div class="setting-row">
+        <div class="setting-label">Tipo di avviso<small>Come vuoi essere avvisato</small></div>
+        <div class="seg-control" id="alertTypeCtrl">
+          <button class="seg-btn" data-val="sonoro">🔊 Suono</button>
+          <button class="seg-btn" data-val="visivo">👁 Visivo</button>
+          <button class="seg-btn active" data-val="entrambi">🔔 Entrambi</button>
+        </div>
+      </div>
+      <div class="setting-row" id="soundRow">
+        <div class="setting-label">Tipo suono<small>Melodia dell'avviso</small></div>
+        <div class="seg-control" id="alertSoundCtrl">
+          <button class="seg-btn active" data-val="campana">🔔 Campana</button>
+          <button class="seg-btn" data-val="beep">🎵 Beep</button>
+          <button class="seg-btn" data-val="allarme">🚨 Allarme</button>
+          <button class="seg-btn" data-val="voce">🗣 Voce</button>
+        </div>
+      </div>
+      <div class="setting-row" id="soundRow2">
+        <div class="setting-label">Volume<small id="volLabel">70%</small></div>
+        <input type="range" id="volumeSlider" min="0" max="100" value="70"/>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Intensità alert<small>Vibrazione e intensità visiva</small></div>
+        <div class="seg-control" id="alertIntensityCtrl">
+          <button class="seg-btn" data-val="bassa">🔅 Bassa</button>
+          <button class="seg-btn active" data-val="media">⚡ Media</button>
+          <button class="seg-btn" data-val="alta">🔆 Alta</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Avvisa prima (minuti)<small>Anticipo rispetto all'orario</small></div>
+        <div class="seg-control" id="alertBeforeCtrl">
+          <button class="seg-btn active" data-val="0">0</button>
+          <button class="seg-btn" data-val="5">5</button>
+          <button class="seg-btn" data-val="10">10</button>
+          <button class="seg-btn" data-val="15">15</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>🔠 Aspetto</h3>
+      <div class="setting-row">
+        <div class="setting-label">Dimensione testo</div>
+        <div class="seg-control" id="fontSizeCtrl">
+          <button class="seg-btn" data-val="">A normale</button>
+          <button class="seg-btn active" data-val="fs-xl">A grande</button>
+          <button class="seg-btn" data-val="fs-xxl">A enorme</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Alto contrasto<small>Migliora la leggibilità</small></div>
+        <button class="toggle" id="contrastToggle"></button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>🎙️ Comandi vocali</h3>
+      <div class="setting-row">
+        <div class="setting-label">Comandi vocali attivi</div>
+        <button class="toggle on" id="voiceToggle"></button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>🔔 Notifiche sistema</h3>
+      <div class="setting-row">
+        <div class="setting-label">Abilita notifiche<small>Avvisi anche a schermo spento</small></div>
+        <button class="btn-small" id="notifBtn">Abilita</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>ℹ️ Informazioni</h3>
+      <div class="setting-row">
+        <div class="setting-label">
+          PrendiPillola v1<br>
+          <small>© 2026 Lazzaro Serva - Centola<br>Tutti i diritti riservati</small>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ══ BOTTOM NAV ══ -->
+<nav id="bottom-nav">
+  <button class="nav-btn active" data-view="today">
+    <span class="ni">📅</span>Oggi
+  </button>
+  <button class="nav-btn" data-view="medicines">
+    <span class="ni">💊</span>Farmaci
+  </button>
+  <button class="nav-btn" data-view="history">
+    <span class="ni">📋</span>Storico
+  </button>
+  <button class="nav-btn" data-view="settings">
+    <span class="ni">⚙️</span>Impostazioni
+  </button>
+</nav>
+
+<!-- ══ FAB AGGIUNGI ══ -->
+<button class="fab hidden" id="fabAdd" aria-label="Aggiungi farmaco" title="Aggiungi farmaco">＋</button>
+
+<!-- ══ ALERT OVERLAY ══ -->
+<div id="alertOverlay" class="hidden">
+  <div class="alert-icon">🔔</div>
+  <div class="alert-msg" id="alertMsg">È ora di prendere il farmaco</div>
+  <div class="alert-sub" id="alertSub"></div>
+  <button class="btn-alert-ok" id="alertOkBtn">✅ Ho preso</button>
+  <button class="btn-small" id="alertMissedBtn" style="background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.5);font-size:var(--fs-label);padding:12px 24px;border-radius:12px;">❌ Non preso</button>
+</div>
+
+<!-- ══ MODALE: AGGIUNGI/MODIFICA FARMACO ══ -->
+<div class="modal-backdrop hidden" id="modalMed">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalMedTitle">Nuovo farmaco</h2>
+      <button class="modal-close" id="closeMed" aria-label="Chiudi">✕</button>
+    </div>
+
+    <div class="field">
+      <label>💊 Nome del farmaco *</label>
+      <input type="text" id="fName" placeholder="es. Aspirina, Cardioaspirina…" autocomplete="off" autocorrect="off"/>
+    </div>
+
+    <div class="field">
+      <label>🧪 Tipo di farmaco *</label>
+      <div class="type-grid" id="typeGrid"></div>
+    </div>
+
+    <div class="field">
+      <label>⏰ Orari di assunzione *</label>
+      <div class="times-list" id="timesList"></div>
+      <button class="btn-add-time" id="addTimeBtn">+ Aggiungi orario</button>
+    </div>
+
+    <div class="field">
+      <label>🔔 Tipo di avviso</label>
+      <div class="seg-control" id="medAlertType">
+        <button class="seg-btn" data-val="sonoro">🔊 Suono</button>
+        <button class="seg-btn" data-val="visivo">👁 Visivo</button>
+        <button class="seg-btn active" data-val="entrambi">🔔 Entrambi</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>📝 Note (opzionale)</label>
+      <input type="text" id="fNotes" placeholder="es. Con il cibo, a stomaco pieno…"/>
+    </div>
+
+    <button class="btn-primary" id="saveMedBtn">💾 Salva farmaco</button>
+    <button class="btn-danger hidden" id="deleteMedBtn">🗑️ Elimina farmaco</button>
+  </div>
+</div>
+
+<!-- ══ MODALE: AIUTO ══ -->
+<div class="modal-backdrop center hidden" id="modalHelp">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>❓ Come si usa</h2>
+      <button class="modal-close" id="closeHelp" aria-label="Chiudi">✕</button>
+    </div>
+
+    <div class="help-section">
+      <h3>🚀 Per iniziare</h3>
+      <p>Tocca il tab <strong>Farmaci</strong> in basso, poi il pulsante <strong>＋</strong> per aggiungere il tuo primo farmaco. Inserisci nome, tipo e orari di assunzione.</p>
+    </div>
+
+    <div class="help-section">
+      <h3>📅 Scheda "Oggi"</h3>
+      <ul>
+        <li>Mostra tutti i farmaci da prendere oggi, in ordine di orario.</li>
+        <li>Tocca <strong>✅ Preso</strong> quando hai assunto il farmaco.</li>
+        <li>Tocca <strong>❌ Saltato</strong> se non puoi prenderlo.</li>
+        <li>Tocca <strong>⚠️ Errore</strong> in caso di assunzione errata.</li>
+        <li>Con 🎙️ (microfono) puoi dire <em>"Preso"</em>, <em>"Saltato"</em>, <em>"Annulla"</em>.</li>
+      </ul>
+    </div>
+
+    <div class="help-section">
+      <h3>🔔 Avvisi</h3>
+      <ul>
+        <li>L'app avvisa all'orario impostato con suono e/o schermo lampeggiante.</li>
+        <li>Puoi scegliere il tipo e l'intensità in <strong>Impostazioni</strong>.</li>
+        <li>Abilita le <em>notifiche di sistema</em> per avvisi anche a schermo spento.</li>
+      </ul>
+    </div>
+
+    <div class="help-section">
+      <h3>💊 Tipi di farmaco supportati</h3>
+      <p>Compressa, gocce, sciroppo, spray, inalatore, cerotto, iniezione, supposta, crema, collirio, bustina e altro. Puoi registrare qualsiasi tipo di assunzione.</p>
+    </div>
+
+    <div class="help-section">
+      <h3>📋 Storico</h3>
+      <p>La scheda Storico mostra gli ultimi 14 giorni di assunzioni con il relativo stato.</p>
+    </div>
+
+    <div class="help-section">
+      <h3>🎙️ Comandi vocali</h3>
+      <ul>
+        <li><strong>"Preso"</strong> — segna il farmaco più vicino come assunto</li>
+        <li><strong>"Non preso" / "Saltato"</strong> — segna come non assunto</li>
+        <li><strong>"Annulla"</strong> — annulla l'ultima azione</li>
+      </ul>
+    </div>
+
+    <div class="help-section" style="border-top:2px solid var(--border);padding-top:14px;margin-top:4px;">
+      <p style="font-size:var(--fs-small);color:var(--text2);text-align:center;">
+        PrendiPillola v1 — © 2026 Lazzaro Serva - Centola<br>
+        <a href="http://www.graficaesiti.it/" style="color:var(--primary);">www.graficaesiti.it</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODALE: CONFERMA GENERICO ══ -->
+<div class="modal-backdrop center hidden" id="modalConfirm">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="confirmTitle">Conferma</h2>
+    </div>
+    <p id="confirmMsg" style="font-size:var(--fs-label);color:var(--text2);margin-bottom:20px;"></p>
+    <button class="btn-primary" id="confirmOk">Conferma</button>
+    <button class="btn-small" id="confirmCancel" style="width:100%;margin-top:8px;padding:14px;text-align:center;">Annulla</button>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div id="toast"></div>
+
+<script>
+/*
+ * PrendiPillola v1 — Promemoria Farmaci
+ * Copyright (c) 2026 Lazzaro Serva - Centola
+ * Via Tasso, 28 – 84051 CENTOLA (SA) – Italia
+ * http://www.graficaesiti.it/
+ * Tutti i diritti riservati – All rights reserved.
+ */
+'use strict';
+
+// ═══════════════════════════════════════════
+// COSTANTI
+// ═══════════════════════════════════════════
+const APP_VERSION = '1.0';
+const SK = 'prendipillola_data';
+const LK = 'prendipillola_log';
+
+const MTYPES = [
+  {id:'compressa', label:'Compressa\nPillola',  icon:'💊'},
+  {id:'gocce',     label:'Gocce',               icon:'💧'},
+  {id:'sciroppo',  label:'Sciroppo',             icon:'🧴'},
+  {id:'spray',     label:'Spray',                icon:'🌬️'},
+  {id:'inalatore', label:'Inalatore\nAerosol',   icon:'🫁'},
+  {id:'cerotto',   label:'Cerotto',              icon:'🩹'},
+  {id:'iniezione', label:'Iniezione',            icon:'💉'},
+  {id:'supposta',  label:'Supposta',             icon:'📌'},
+  {id:'crema',     label:'Crema\nUnguento',      icon:'🫙'},
+  {id:'collirio',  label:'Collirio',             icon:'👁️'},
+  {id:'bustina',   label:'Bustina',              icon:'📦'},
+  {id:'altro',     label:'Altro',                icon:'⚕️'},
+];
+
+// ═══════════════════════════════════════════
+// STATO
+// ═══════════════════════════════════════════
+let medicines = [];
+let settings = {
+  volume:70, fontSize:'fs-xl', highContrast:false,
+  voiceEnabled:true, alertType:'entrambi', alertIntensity:'media',
+  alertSound:'campana', alertBefore:0,
+};
+let dailyLog = {};
+let currentView = 'today';
+let editingId = null;
+let selectedType = 'compressa';
+let medAlertType = 'entrambi';
+let alertQueue = []; // {medId, doseIdx, time}
+let lastAction = null; // for undo via voice
+let recognition = null;
+let listening = false;
+let audioCtx = null;
+let alertTimerInterval = null;
+
+// ═══════════════════════════════════════════
+// PERSISTENZA
+// ═══════════════════════════════════════════
+function saveData(){
+  localStorage.setItem(SK, JSON.stringify({medicines, settings}));
+  localStorage.setItem(LK, JSON.stringify(dailyLog));
+}
+function loadData(){
+  try{
+    const d = JSON.parse(localStorage.getItem(SK)||'{}');
+    if(d.medicines) medicines = d.medicines;
+    if(d.settings) settings = {...settings, ...d.settings};
+    const l = JSON.parse(localStorage.getItem(LK)||'{}');
+    dailyLog = l;
+  }catch(e){}
+}
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function getToday(){return new Date().toISOString().split('T')[0];}
+function getNow(){
+  const d=new Date();
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
+function toMin(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+function fmtDate(ds){
+  const d=new Date(ds+'T00:00:00');
+  return d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+}
+function uuid(){return 'med_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);}
+function typeInfo(id){return MTYPES.find(t=>t.id===id)||MTYPES[0];}
+
+// ═══════════════════════════════════════════
+// LOG
+// ═══════════════════════════════════════════
+function logKey(mid,di){return mid+':'+di;}
+function getDoseStatus(mid,di,date){
+  return dailyLog[date]?.[logKey(mid,di)]?.status||'pending';
+}
+function setDoseStatus(mid,di,status,date){
+  date=date||getToday();
+  if(!dailyLog[date])dailyLog[date]={};
+  const prev = dailyLog[date][logKey(mid,di)];
+  dailyLog[date][logKey(mid,di)]={status,timestamp:new Date().toISOString()};
+  lastAction={mid,di,date,prevStatus:prev?.status||'pending'};
+  saveData();
+  if(currentView==='today') renderToday();
+  else if(currentView==='history') renderHistory();
+}
+function undoLastAction(){
+  if(!lastAction)return showToast('Nessuna azione da annullare');
+  const{mid,di,date,prevStatus}=lastAction;
+  dailyLog[date][logKey(mid,di)]={status:prevStatus,timestamp:new Date().toISOString()};
+  lastAction=null;
+  saveData();
+  renderToday();
+  showToast('✅ Azione annullata');
+}
+
+// ═══════════════════════════════════════════
+// AUDIO
+// ═══════════════════════════════════════════
+function initAudio(){
+  if(!audioCtx){
+    try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}
+  }
+}
+function playBeep(freq=880,dur=0.35,type='sine'){
+  if(!audioCtx)initAudio();
+  if(!audioCtx)return;
+  try{
+    const vol=Math.max(0.01,settings.volume/100);
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    osc.connect(gain);gain.connect(audioCtx.destination);
+    osc.type=type;osc.frequency.value=freq;
+    gain.gain.setValueAtTime(vol,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur);
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime+dur);
+  }catch(e){}
+}
+function playCampana(){
+  initAudio();
+  const freqs=settings.alertIntensity==='alta'?[1047,1319,1568,1047]:
+              settings.alertIntensity==='bassa'?[523,659]:[880,1047,1319];
+  freqs.forEach((f,i)=>setTimeout(()=>playBeep(f,0.5,'sine'),i*350));
+}
+function playAllarme(){
+  initAudio();
+  const reps=settings.alertIntensity==='alta'?6:settings.alertIntensity==='bassa'?2:4;
+  for(let i=0;i<reps;i++){
+    setTimeout(()=>playBeep(1100,0.18,'square'),i*400);
+    setTimeout(()=>playBeep(880,0.18,'square'),i*400+200);
+  }
+}
+function triggerSound(){
+  const s=settings.alertSound;
+  if(s==='beep')playBeep(880,0.5);
+  else if(s==='campana')playCampana();
+  else if(s==='allarme')playAllarme();
+  else if(s==='voce'){/* voice handled below */}
+}
+function speakIt(text){
+  if(!('speechSynthesis' in window))return;
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='it-IT';
+  u.volume=Math.max(0.1,settings.volume/100);
+  u.rate=settings.alertIntensity==='alta'?1.1:settings.alertIntensity==='bassa'?0.8:0.95;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+// ═══════════════════════════════════════════
+// ALERT SYSTEM
+// ═══════════════════════════════════════════
+function checkAlerts(){
+  const nowMin=toMin(getNow());
+  const today=getToday();
+  const before=parseInt(settings.alertBefore)||0;
+  medicines.forEach(med=>{
+    if(!med.active)return;
+    (med.times||[]).forEach((t,i)=>{
+      const tMin=toMin(t);
+      const diff=tMin-nowMin;
+      if(diff>=0&&diff<=before+1){
+        const status=getDoseStatus(med.id,i,today);
+        if(status==='pending'){
+          const ak=`alerted_${med.id}_${i}_${today}`;
+          if(!sessionStorage.getItem(ak)){
+            sessionStorage.setItem(ak,'1');
+            fireAlert(med,i,t);
+          }
+        }
+      }
+    });
+  });
+}
+function fireAlert(med,doseIdx,time){
+  const ti=typeInfo(med.type);
+  const msg=`Ora di prendere: ${med.name}`;
+  const atype=settings.alertType;
+  // Sound
+  if(atype==='sonoro'||atype==='entrambi'){
+    initAudio();
+    triggerSound();
+    if(settings.alertSound==='voce')setTimeout(()=>speakIt(msg),800);
+  }
+  // Visual
+  if(atype==='visivo'||atype==='entrambi'){
+    showAlertOverlay(med,doseIdx,msg,time);
+  }
+  // Notification
+  if('Notification' in window&&Notification.permission==='granted'){
+    try{new Notification('💊 PrendiPillola',{body:msg,icon:'assets/icon-192.png'});}catch(e){}
+  }
+  // Vibration
+  if('vibrate' in navigator){
+    const p=settings.alertIntensity==='alta'?[600,200,600,200,600]:
+             settings.alertIntensity==='bassa'?[200]:[300,150,300];
+    navigator.vibrate(p);
+  }
+  // Update today render
+  if(currentView==='today') renderToday();
+}
+
+let alertMedId=null, alertDoseIdx=null;
+function showAlertOverlay(med,di,msg,time){
+  alertMedId=med.id; alertDoseIdx=di;
+  const el=document.getElementById('alertOverlay');
+  document.getElementById('alertMsg').textContent=msg;
+  const ti=typeInfo(med.type);
+  el.querySelector('.alert-icon').textContent=ti.icon||'🔔';
+  document.getElementById('alertSub').textContent=`Orario: ${time}${med.notes?' — '+med.notes:''}`;
+  el.classList.remove('hidden');
+}
+document.getElementById('alertOkBtn').addEventListener('click',()=>{
+  if(alertMedId!==null)setDoseStatus(alertMedId,alertDoseIdx,'taken');
+  closeAlert();
+  showToast('✅ Assunzione registrata!');
+});
+document.getElementById('alertMissedBtn').addEventListener('click',()=>{
+  if(alertMedId!==null)setDoseStatus(alertMedId,alertDoseIdx,'missed');
+  closeAlert();
+  showToast('📌 Segnato come non preso');
+});
+function closeAlert(){
+  document.getElementById('alertOverlay').classList.add('hidden');
+  alertMedId=null; alertDoseIdx=null;
+}
+
+// ═══════════════════════════════════════════
+// RENDER TODAY
+// ═══════════════════════════════════════════
+function renderToday(){
+  const today=getToday();
+  const el=document.getElementById('todayLabel');
+  el.textContent='Oggi';
+  document.getElementById('todayDate').textContent=fmtDate(today);
+
+  const nowMin=toMin(getNow());
+  // Build dose list
+  let doses=[];
+  medicines.forEach(med=>{
+    if(!med.active)return;
+    (med.times||[]).forEach((t,i)=>{
+      doses.push({med,doseIdx:i,time:t,timeMin:toMin(t)});
+    });
+  });
+  doses.sort((a,b)=>a.timeMin-b.timeMin);
+
+  const container=document.getElementById('doseList');
+  if(!doses.length){
+    container.innerHTML=`<div class="empty-state">
+      <div class="es-icon">💊</div>
+      <h2>Nessun farmaco aggiunto</h2>
+      <p>Vai alla scheda <strong>Farmaci</strong> per aggiungere i tuoi medicinali.</p>
+      <button class="btn-start" onclick="switchView('medicines')">Vai a Farmaci →</button>
+    </div>`;
+    document.getElementById('todayVoiceRow').classList.add('hidden');
+    return;
+  }
+
+  if(settings.voiceEnabled){
+    document.getElementById('todayVoiceRow').classList.remove('hidden');
+  }
+
+  container.innerHTML='';
+  doses.forEach(({med,doseIdx,time,timeMin})=>{
+    const status=getDoseStatus(med.id,doseIdx,today);
+    const ti=typeInfo(med.type);
+    const diff=timeMin-nowMin;
+
+    let badge='',badgeClass='',actions='';
+    if(status==='taken'){
+      badge='✅ Preso';badgeClass='badge-taken';
+      actions=`<button class="btn-small orange" onclick="markDose('${med.id}',${doseIdx},'error')">⚠️ Errore</button>
+               <button class="btn-small" onclick="markDose('${med.id}',${doseIdx},'cancelled')">🚫 Annulla</button>`;
+    } else if(status==='missed'){
+      badge='❌ Saltato';badgeClass='badge-missed';
+      actions=`<button class="btn-preso" onclick="markDose('${med.id}',${doseIdx},'taken')">✅ Segna come preso</button>`;
+    } else if(status==='cancelled'){
+      badge='🚫 Annullato';badgeClass='badge-cancelled';
+      actions=`<button class="btn-small" onclick="markDose('${med.id}',${doseIdx},'pending')">↩️ Ripristina</button>`;
+    } else if(status==='error'){
+      badge='⚠️ Errore';badgeClass='badge-error';
+      actions=`<button class="btn-preso" onclick="markDose('${med.id}',${doseIdx},'taken')">✅ Segna come preso</button>`;
+    } else {
+      // pending
+      if(diff<=-1){
+        badge='⏰ In ritardo!';badgeClass='badge-now';
+      } else if(diff<=10){
+        badge='🔔 Ora!';badgeClass='badge-now';
+      } else {
+        badge=`⏳ Tra ${diff} min`;badgeClass='badge-pending';
+      }
+      actions=`<button class="btn-preso" onclick="markDose('${med.id}',${doseIdx},'taken')">✅ Ho preso</button>
+               <button class="btn-small red" onclick="markDose('${med.id}',${doseIdx},'missed')">❌ Non preso</button>`;
+    }
+
+    const card=document.createElement('div');
+    card.className='dose-card';
+    card.innerHTML=`
+      <div class="dose-card-header">
+        <div class="dose-icon">${ti.icon}</div>
+        <div class="dose-name">
+          <strong>${esc(med.name)}</strong>
+          <span>${ti.label.replace('\n',' ')}${med.notes?' · '+esc(med.notes):''}</span>
+        </div>
+        <div class="dose-time">${time}</div>
+      </div>
+      <span class="dose-status-badge ${badgeClass}">${badge}</span>
+      <div class="dose-actions">${actions}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function markDose(mid,di,status){
+  setDoseStatus(mid,di,status);
+  const statusLabels={taken:'✅ Assunto',missed:'❌ Non preso',cancelled:'🚫 Annullato',error:'⚠️ Errore segnalato',pending:'↩️ Ripristinato'};
+  showToast(statusLabels[status]||'Salvato');
+}
+
+// ═══════════════════════════════════════════
+// RENDER MEDICINES
+// ═══════════════════════════════════════════
+function renderMedicines(){
+  const container=document.getElementById('medicineList');
+  if(!medicines.length){
+    container.innerHTML=`<div class="empty-state">
+      <div class="es-icon">🗂️</div>
+      <h2>Nessun farmaco</h2>
+      <p>Tocca <strong>＋</strong> per aggiungere il tuo primo farmaco.</p>
+    </div>`;
+    return;
+  }
+  container.innerHTML='';
+  medicines.forEach(med=>{
+    const ti=typeInfo(med.type);
+    const timesStr=(med.times||[]).join(' · ');
+    const card=document.createElement('div');
+    card.className='med-card';
+    card.innerHTML=`
+      <span style="font-size:36px;">${ti.icon}</span>
+      <div class="med-card-info">
+        <strong>${esc(med.name)}</strong>
+        <p>${ti.label.replace('\n',' ')} · ${timesStr}</p>
+        ${med.notes?`<p style="font-size:var(--fs-small);color:var(--text2)">${esc(med.notes)}</p>`:''}
+      </div>
+      <div class="med-card-actions">
+        <button class="icon-btn" onclick="openEditMed('${med.id}')" title="Modifica" aria-label="Modifica">✏️</button>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════
+// RENDER HISTORY
+// ═══════════════════════════════════════════
+function renderHistory(){
+  const container=document.getElementById('historyList');
+  const days=[];
+  for(let i=0;i<14;i++){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  container.innerHTML='';
+  days.forEach(date=>{
+    const log=dailyLog[date];
+    let entries=[];
+    medicines.forEach(med=>{
+      (med.times||[]).forEach((t,i)=>{
+        const status=log?.[logKey(med.id,i)]?.status||'pending';
+        const ts=log?.[logKey(med.id,i)]?.timestamp;
+        entries.push({med,time:t,doseIdx:i,status,ts});
+      });
+    });
+    if(!entries.length)return;
+    entries.sort((a,b)=>toMin(a.time)-toMin(b.time));
+
+    const smap={taken:'✅',missed:'❌',cancelled:'🚫',error:'⚠️',pending:'⏳'};
+    const labmap={taken:'Preso',missed:'Non preso',cancelled:'Annullato',error:'Errore',pending:'In attesa'};
+
+    const block=document.createElement('div');
+    block.className='history-day';
+    block.innerHTML=`<div class="history-day-header">📅 ${fmtDate(date)}</div>`;
+    entries.forEach(({med,time,status,ts})=>{
+      const ti=typeInfo(med.type);
+      const timeStr=ts?new Date(ts).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):'';
+      const item=document.createElement('div');
+      item.className='history-item';
+      item.innerHTML=`
+        <div class="hi-icon">${ti.icon}</div>
+        <div class="hi-info">
+          <strong>${esc(med.name)}</strong>
+          <span>Ore ${time}${timeStr?' · Registrato '+timeStr:''}</span>
+        </div>
+        <div class="hi-status">${smap[status]||'⏳'}</div>`;
+      block.appendChild(item);
+    });
+    container.appendChild(block);
+  });
+  if(!container.children.length){
+    container.innerHTML=`<div class="empty-state">
+      <div class="es-icon">📋</div>
+      <h2>Nessuno storico</h2>
+      <p>Le assunzioni registrate appariranno qui.</p>
+    </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════
+// MODAL: AGGIUNGI / MODIFICA FARMACO
+// ═══════════════════════════════════════════
+function buildTypeGrid(){
+  const grid=document.getElementById('typeGrid');
+  grid.innerHTML='';
+  MTYPES.forEach(t=>{
+    const btn=document.createElement('button');
+    btn.className='type-btn'+(t.id===selectedType?' active':'');
+    btn.innerHTML=`<span class="ti">${t.icon}</span>${t.label}`;
+    btn.addEventListener('click',()=>{
+      selectedType=t.id;
+      grid.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    grid.appendChild(btn);
+  });
+}
+function buildTimesList(times){
+  const list=document.getElementById('timesList');
+  list.innerHTML='';
+  (times||['08:00']).forEach(t=>addTimeRow(t));
+}
+function addTimeRow(val){
+  const list=document.getElementById('timesList');
+  const row=document.createElement('div');
+  row.className='time-row';
+  row.innerHTML=`<input type="time" value="${val||'08:00'}"/>
+    <button class="btn-del-time" onclick="this.parentElement.remove()" aria-label="Rimuovi orario">✕</button>`;
+  list.appendChild(row);
+}
+function getTimes(){
+  return Array.from(document.querySelectorAll('.time-row input')).map(i=>i.value).filter(Boolean);
+}
+
+function openAddMed(){
+  editingId=null;selectedType='compressa';medAlertType='entrambi';
+  document.getElementById('modalMedTitle').textContent='Nuovo farmaco';
+  document.getElementById('fName').value='';
+  document.getElementById('fNotes').value='';
+  document.getElementById('deleteMedBtn').classList.add('hidden');
+  buildTypeGrid();buildTimesList(['08:00']);
+  syncMedAlertBtns();
+  document.getElementById('modalMed').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('fName').focus(),200);
+}
+function openEditMed(id){
+  const med=medicines.find(m=>m.id===id);
+  if(!med)return;
+  editingId=id;selectedType=med.type||'compressa';medAlertType=med.alertType||'entrambi';
+  document.getElementById('modalMedTitle').textContent='Modifica farmaco';
+  document.getElementById('fName').value=med.name;
+  document.getElementById('fNotes').value=med.notes||'';
+  document.getElementById('deleteMedBtn').classList.remove('hidden');
+  buildTypeGrid();buildTimesList(med.times);
+  syncMedAlertBtns();
+  document.getElementById('modalMed').classList.remove('hidden');
+}
+function syncMedAlertBtns(){
+  document.querySelectorAll('#medAlertType .seg-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.val===medAlertType);
+  });
+}
+document.querySelectorAll('#medAlertType .seg-btn').forEach(b=>{
+  b.addEventListener('click',()=>{medAlertType=b.dataset.val;syncMedAlertBtns();});
+});
+document.getElementById('addTimeBtn').addEventListener('click',()=>addTimeRow(''));
+document.getElementById('saveMedBtn').addEventListener('click',()=>{
+  const name=document.getElementById('fName').value.trim();
+  if(!name)return showToast('⚠️ Inserisci il nome del farmaco');
+  const times=getTimes();
+  if(!times.length)return showToast('⚠️ Aggiungi almeno un orario');
+  const med={
+    name, type:selectedType,
+    times: times.sort(),
+    alertType:medAlertType,
+    notes:document.getElementById('fNotes').value.trim(),
+    active:true,
+  };
+  if(editingId){
+    const idx=medicines.findIndex(m=>m.id===editingId);
+    if(idx>=0)medicines[idx]={...medicines[idx],...med};
+  } else {
+    med.id=uuid();
+    medicines.push(med);
+  }
+  saveData();
+  document.getElementById('modalMed').classList.add('hidden');
+  showToast(editingId?'✅ Farmaco aggiornato':'✅ Farmaco aggiunto');
+  renderMedicines();
+  if(currentView==='today') renderToday();
+});
+document.getElementById('deleteMedBtn').addEventListener('click',()=>{
+  if(!editingId)return;
+  const med=medicines.find(m=>m.id===editingId);
+  showConfirm('Elimina farmaco',`Eliminare "${med?.name}"? I dati storici verranno conservati.`,()=>{
+    medicines=medicines.filter(m=>m.id!==editingId);
+    saveData();
+    document.getElementById('modalMed').classList.add('hidden');
+    showToast('🗑️ Farmaco eliminato');
+    renderMedicines();
+    renderToday();
+  });
+});
+document.getElementById('closeMed').addEventListener('click',()=>document.getElementById('modalMed').classList.add('hidden'));
+document.getElementById('closeHelp').addEventListener('click',()=>document.getElementById('modalHelp').classList.add('hidden'));
+document.getElementById('helpBtn').addEventListener('click',()=>document.getElementById('modalHelp').classList.remove('hidden'));
+
+// Close on backdrop click
+['modalMed','modalHelp'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){
+    if(e.target===this)this.classList.add('hidden');
+  });
+});
+
+// ═══════════════════════════════════════════
+// CONFIRM MODAL
+// ═══════════════════════════════════════════
+let confirmCallback=null;
+function showConfirm(title,msg,cb){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmMsg').textContent=msg;
+  confirmCallback=cb;
+  document.getElementById('modalConfirm').classList.remove('hidden');
+}
+document.getElementById('confirmOk').addEventListener('click',()=>{
+  document.getElementById('modalConfirm').classList.add('hidden');
+  if(confirmCallback)confirmCallback();
+  confirmCallback=null;
+});
+document.getElementById('confirmCancel').addEventListener('click',()=>{
+  document.getElementById('modalConfirm').classList.add('hidden');
+  confirmCallback=null;
+});
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function switchView(v){
+  currentView=v;
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.view===v);
+  });
+  const fab=document.getElementById('fabAdd');
+  fab.classList.toggle('hidden', v!=='medicines');
+  if(v==='today') renderToday();
+  else if(v==='medicines') renderMedicines();
+  else if(v==='history') renderHistory();
+  else if(v==='settings') applySettings();
+}
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>switchView(btn.dataset.view));
+});
+document.getElementById('fabAdd').addEventListener('click',openAddMed);
+
+// ═══════════════════════════════════════════
+// IMPOSTAZIONI
+// ═══════════════════════════════════════════
+function applySettings(){
+  const body=document.body;
+  // Font size
+  body.classList.remove('fs-xl','fs-xxl');
+  if(settings.fontSize)body.classList.add(settings.fontSize);
+  // High contrast
+  body.classList.toggle('hc',settings.highContrast);
+  // Sync controls
+  syncSegControl('alertTypeCtrl','alertType');
+  syncSegControl('alertSoundCtrl','alertSound');
+  syncSegControl('alertIntensityCtrl','alertIntensity');
+  syncSegControl('alertBeforeCtrl','alertBefore');
+  syncSegControl('fontSizeCtrl','fontSize');
+  document.getElementById('volumeSlider').value=settings.volume;
+  document.getElementById('volLabel').textContent=settings.volume+'%';
+  document.getElementById('contrastToggle').classList.toggle('on',settings.highContrast);
+  document.getElementById('voiceToggle').classList.toggle('on',settings.voiceEnabled);
+}
+function syncSegControl(ctrlId,settingKey){
+  const ctrl=document.getElementById(ctrlId);
+  if(!ctrl)return;
+  ctrl.querySelectorAll('.seg-btn').forEach(b=>{
+    b.classList.toggle('active',String(b.dataset.val)===String(settings[settingKey]));
+  });
+}
+function bindSegControl(ctrlId,settingKey,extra){
+  const ctrl=document.getElementById(ctrlId);
+  if(!ctrl)return;
+  ctrl.querySelectorAll('.seg-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      settings[settingKey]=btn.dataset.val;
+      saveData();syncSegControl(ctrlId,settingKey);
+      if(extra)extra(btn.dataset.val);
+    });
+  });
+}
+bindSegControl('alertTypeCtrl','alertType');
+bindSegControl('alertSoundCtrl','alertSound');
+bindSegControl('alertIntensityCtrl','alertIntensity');
+bindSegControl('alertBeforeCtrl','alertBefore');
+bindSegControl('fontSizeCtrl','fontSize',(v)=>{
+  document.body.classList.remove('fs-xl','fs-xxl');
+  if(v)document.body.classList.add(v);
+});
+document.getElementById('volumeSlider').addEventListener('input',function(){
+  settings.volume=parseInt(this.value);
+  document.getElementById('volLabel').textContent=settings.volume+'%';
+  saveData();
+});
+document.getElementById('contrastToggle').addEventListener('click',function(){
+  settings.highContrast=!settings.highContrast;
+  this.classList.toggle('on',settings.highContrast);
+  document.body.classList.toggle('hc',settings.highContrast);
+  saveData();
+});
+document.getElementById('voiceToggle').addEventListener('click',function(){
+  settings.voiceEnabled=!settings.voiceEnabled;
+  this.classList.toggle('on',settings.voiceEnabled);
+  saveData();
+  document.getElementById('todayVoiceRow').classList.toggle('hidden',!settings.voiceEnabled);
+});
+document.getElementById('notifBtn').addEventListener('click',()=>{
+  if('Notification' in window){
+    Notification.requestPermission().then(p=>{
+      showToast(p==='granted'?'✅ Notifiche abilitate':'❌ Notifiche non abilitate');
+    });
+  } else showToast('Notifiche non supportate da questo browser');
+});
+
+// ═══════════════════════════════════════════
+// VOICE RECOGNITION
+// ═══════════════════════════════════════════
+function setupVoice(){
+  const SpeechRec=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRec)return;
+  recognition=new SpeechRec();
+  recognition.lang='it-IT';
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.onresult=function(e){
+    const cmd=e.results[0][0].transcript.trim().toLowerCase();
+    handleVoiceCmd(cmd);
+  };
+  recognition.onend=function(){
+    listening=false;
+    const btn=document.getElementById('voiceBtn');
+    if(btn){btn.textContent='🎙️';btn.classList.remove('listening');}
+    document.getElementById('voiceStatus').textContent='Tocca il microfono e di\' "Preso"';
+  };
+  recognition.onerror=function(e){
+    listening=false;
+    const btn=document.getElementById('voiceBtn');
+    if(btn){btn.textContent='🎙️';btn.classList.remove('listening');}
+    if(e.error!=='no-speech')showToast('⚠️ Errore microfono: '+e.error);
+  };
+}
+function handleVoiceCmd(cmd){
+  const today=getToday();
+  const nowMin=toMin(getNow());
+  // Find closest pending dose
+  let closest=null, minDiff=9999;
+  medicines.forEach(med=>{
+    (med.times||[]).forEach((t,i)=>{
+      const status=getDoseStatus(med.id,i,today);
+      if(status==='pending'){
+        const diff=Math.abs(toMin(t)-nowMin);
+        if(diff<minDiff){minDiff=diff;closest={med,i};}
+      }
+    });
+  });
+
+  if(/preso|ho preso|assunto|preso bene/.test(cmd)){
+    if(closest){setDoseStatus(closest.med.id,closest.i,'taken');showToast('✅ '+closest.med.name+' — Preso');}
+    else showToast('Nessun farmaco in attesa');
+  } else if(/saltato|non preso|non ho preso|mancato/.test(cmd)){
+    if(closest){setDoseStatus(closest.med.id,closest.i,'missed');showToast('❌ '+closest.med.name+' — Saltato');}
+    else showToast('Nessun farmaco in attesa');
+  } else if(/annull|errore|sbagliato/.test(cmd)){
+    undoLastAction();
+  } else {
+    showToast('Comando non riconosciuto: "'+cmd+'"');
+  }
+}
+document.getElementById('voiceBtn').addEventListener('click',()=>{
+  if(!recognition){showToast('Microfono non supportato dal browser');return;}
+  if(listening){recognition.stop();return;}
+  try{
+    recognition.start();listening=true;
+    const btn=document.getElementById('voiceBtn');
+    btn.textContent='⏹';btn.classList.add('listening');
+    document.getElementById('voiceStatus').textContent='Sto ascoltando… parla ora';
+    initAudio(); // unlock audio context
+  }catch(e){showToast('Microfono non disponibile');}
+});
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ═══════════════════════════════════════════
+// UTILITY
+// ═══════════════════════════════════════════
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════
+// SERVICE WORKER
+// ═══════════════════════════════════════════
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function init(){
+  loadData();
+  applySettings();
+  setupVoice();
+  renderToday();
+  // Alert check every 30 seconds
+  alertTimerInterval=setInterval(checkAlerts,30000);
+  checkAlerts(); // immediate check
+  // FAB visibility
+  document.getElementById('fabAdd').classList.add('hidden');
+}
+init();
+</script>
+</body>
+</html>

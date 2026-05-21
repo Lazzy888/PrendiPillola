@@ -1,0 +1,35 @@
+{
+  "name": "PrendiPillola",
+  "short_name": "PrendiPillola",
+  "version": "1",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e3f2fd",
+  "theme_color": "#1565c0",
+  "lang": "it",
+  "description": "PrendiPillola v1 – Promemoria farmaci semplice per persone anziane. Copyright (c) 2026 Lazzaro Serva - Centola. Tutti i diritti riservati.",
+  "author": "Lazzaro Serva – http://www.graficaesiti.it/",
+  "orientation": "portrait-primary",
+  "categories": ["health", "medical"],
+  "screenshots": [
+    {
+      "src": "assets/splash-1280x720.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
